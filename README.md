@@ -1,6 +1,6 @@
 # Nata
 
-Nata is an application switch layer for [Kanata](https://github.com/jtroo/kanata) on Linux.
+Nata is an application-aware switching layer for the [Kanata](https://github.com/jtroo/kanata) on Linux.
 
 > [!IMPORTANT]
 > Please be aware that Nata is currently in its beta version. As such, it may contain bugs that have not yet been identified or resolved.
