@@ -1,3 +1,3 @@
 # Config 
 
-See the [Recipes](../../docs/config.md) documentation for more details.
+See the [Config](../../docs/config.md) documentation for more details.
