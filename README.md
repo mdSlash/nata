@@ -18,7 +18,7 @@
 
 ### Download the Script and Make It Executable
 
-1. **Manual Download**: Download the Nata [script](/nata) and make it executable:
+1. **Manual Download**: Download the **Nata** [script](/nata) and make it executable:
 
    ```bash
    chmod +x nata
