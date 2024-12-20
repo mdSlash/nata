@@ -6,7 +6,7 @@
   "recipes": "~/.config/kanata/recipes.sh",
   "window_rules": [
     { "class": "Ferdium", "title": "ChatGPT", "layer": "ai_mode" },
-    { "class": "*", "title": "\\^nvim", "layer": "b" },
+    { "class": "*", "title": "Code - OSS", "layer": "vs_code" },
     { "class": "Vivaldi", "title": "*", "layer": null },
     {
       "class": "^nvim$",
