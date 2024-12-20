@@ -81,7 +81,7 @@ This document lists all **Nata** script options in detail.
 | **DESC** | Change to the layer and exit if the specified argument matches the rule: `{ "class": "<VALUE>", "title": "*" }`. |
 | **ARG**  | `WINDOW_CLASS`                                                                                                   |
 
-For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window-rules) documentation.
+For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules) documentation.
 
 ---
 
@@ -92,7 +92,7 @@ For more information about rules, see the [window rules](https://github.com/mdSl
 | **DESC** | Change to the layer and exit if the specified argument matches the rule: `{ "class": "*", "title": "<VALUE>" }`. |
 | **ARG**  | `WINDOW_TITLE`                                                                                                   |
 
-For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window-rules) documentation.
+For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules) documentation.
 
 ---
 
