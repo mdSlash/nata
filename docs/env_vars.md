@@ -43,7 +43,7 @@ This document outlines the environment variables used in the script, detailing t
 To access an environment variable in your [recipes](/docs/recipes.md) script, use the `$` prefix followed by the variable name:
 
 ```bash
-echo "Active window title: $WIN_TITLE"
+echo "Active window title: $ACTIVE_WIN_TITLE"
 ```
 
 ---
