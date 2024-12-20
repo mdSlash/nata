@@ -170,7 +170,7 @@ Here’s an example of rule prioritization:
 See [config.json](../examples/config.json) for a sample configuration file.
 
 > [!NOTE]
-> To view detailed information about the active window and the matching rules, use the [`-R`, `--rule`](../docs/script_options.md#-r---rule) option."
+> To view detailed information about the active window and the matching rules, use the [`-R`, `--rule`](../docs/script_options.md#-r---rule) option.
 
 ---
 
