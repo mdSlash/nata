@@ -119,11 +119,11 @@ For more information and examples, see the [config](https://github.com/mdSlash/n
 
 ### `-r`, `--recipes`
 
-|          |                                                                                          |
-| -------- | ---------------------------------------------------------------------------------------- |
-| **DESC** | Specify the path to a script that will run in the background whenever the layer changes. |
-| **ARG**  | `SCRIPT_PATH`                                                                            |
-| **DEF**  | `~/.config/kanata/recipes.sh`                                                            |
+|          |                                                                                                                                                      |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DESC** | Specify the path to a script that will run in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) whenever the layer changes. |
+| **ARG**  | `SCRIPT_PATH`                                                                                                                                        |
+| **DEF**  | `~/.config/kanata/recipes.sh`                                                                                                                        |
 
 For more information and examples, see the [recipes](https://github.com/mdSlash/nata/blob/main/docs/recipes.md) documentation.
 
