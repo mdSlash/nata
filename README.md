@@ -88,13 +88,13 @@ We welcome contributions! If you find bugs or have suggestions for improvements,
 
 <!--  -->
 
-[help]: /docs/script-options.md#-h---help
-[version]: /docs/script-options.md#-v---version
-[quiet]: /docs/script-options.md#-q---quiet
-[interval]: /docs/script-options.md#-i---interval
-[port]: /docs/script-options.md#-p---port
-[class]: /docs/script-options.md#-c---class
-[title]: /docs/script-options.md#-t---title
-[layer]: /docs/script-options.md#-l---layer
-[config]: /docs/script-options.md#-c---config
-[recipes]: /docs/script-options.md#-r---recipes
+[help]: /docs/script_options.md#-h---help
+[version]: /docs/script_options.md#-v---version
+[quiet]: /docs/script_options.md#-q---quiet
+[interval]: /docs/script_options.md#-i---interval
+[port]: /docs/script_options.md#-p---port
+[class]: /docs/script_options.md#-c---class
+[title]: /docs/script_options.md#-t---title
+[layer]: /docs/script_options.md#-l---layer
+[config]: /docs/script_options.md#-c---config
+[recipes]: /docs/script_options.md#-r---recipes
