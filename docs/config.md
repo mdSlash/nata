@@ -2,7 +2,7 @@
 
 This document lists all available options you can use in your configuration file.
 
-To see a sample configuration file, see: [`config.json`](../examples/app.json)
+To see a sample configuration file, see: [`config.json`](../examples/config.json)
 
 ## Table of Contents
 
@@ -67,7 +67,7 @@ You can use this in the `layer` field to avoid repeating the base layer name in 
 
 Specifies the location of the recipe script. This file contains additional configuration or scripts to run. Replace the value with the path to your recipe file.
 
-You can also use **Nata** [environment variables](doc/env-vars.md) inside the script. For more information, see the [recipes](doc/recipes.md) doc.
+You can also use **Nata** [environment variables](../docs/env_vars.md) inside your [recipes](../docs/recipes.md) script.
 
 ## `window_rules`
 
@@ -167,10 +167,10 @@ Here’s an example of rule prioritization:
 ]
 ```
 
-See [config.json](exmaple/config.json) for a sample configuration file.
+See [config.json](../examples/config.json) for a sample configuration file.
 
 > [!NOTE]
-> To view detailed information about the active window and the matching rules, use the [`-R`, `--rule`](doc/script_options.md#-r---rule) option."
+> To view detailed information about the active window and the matching rules, use the [`-R`, `--rule`](../docs/script_options.md#-r---rule) option."
 
 ---
 
