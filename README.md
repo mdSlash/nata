@@ -63,18 +63,18 @@ See the [config](/docs/config.md) documentation for more details.
 
 ## Options
 
-| Option                         | Description                                                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------- |
-| [`-h`, `--help`][help]         | Display help message and exit.                                                         |
-| [`-v`, `--version`][version]   | Show script version and exit.                                                          |
-| [`-q`, `--quiet`][quiet]       | Run quietly; log errors only.                                                          |
-| [`-i`, `--interval`][interval] | Set update interval for checking the active window.                                    |
-| [`-p`, `--port`][port]         | Specify a TCP port or IP address with a port.                                          |
-| [`-C`, `--class`][class]       | Change layer if the argument matches the rule: `{ "class": "<VALUE>", "title": "*" }`. |
-| [`-t`, `--title`][title]       | Change layer if the argument matches the rule: `{ "class": "*", "title": "<VALUE>" }`. |
-| [`-l`, `--layer`][layer]       | Specify a layer name to switch to.                                                     |
-| [`-c`, `--config`][config]     | Path to the [config](#config) file in JSON format.                                     |
-| [`-r`, `--recipes`][recipes]   | Path to a script that runs in the background on layer change.                          |
+| Option                         | Description                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| [`-h`, `--help`][help]         | Display help message and exit.                                                                                            |
+| [`-v`, `--version`][version]   | Show script version and exit.                                                                                             |
+| [`-q`, `--quiet`][quiet]       | Run quietly; log errors only.                                                                                             |
+| [`-i`, `--interval`][interval] | Set update interval for checking the active window.                                                                       |
+| [`-p`, `--port`][port]         | Specify a TCP port or IP address with a port.                                                                             |
+| [`-C`, `--class`][class]       | Change layer if the argument matches the rule: `{ "class": "<VALUE>", "title": "*" }`.                                    |
+| [`-t`, `--title`][title]       | Change layer if the argument matches the rule: `{ "class": "*", "title": "<VALUE>" }`.                                    |
+| [`-l`, `--layer`][layer]       | Specify a layer name to switch to.                                                                                        |
+| [`-c`, `--config`][config]     | Path to the [config](#config) file in JSON format.                                                                        |
+| [`-r`, `--recipes`][recipes]   | Path to a script that runs in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) on layer change. |
 
 See the [options](/docs/script-options.md) documentation for more details.
 
