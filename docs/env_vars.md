@@ -11,11 +11,11 @@ This document outlines the environment variables used in the script, detailing t
 
 ### Window Matching Rule
 
-| Variable Name | Type   | Description                                    |
-| ------------- | ------ | ---------------------------------------------- |
-| `LAYER_NAME`  | String | Name of the layer for the matched window rule. |
-| `WIN_CLASS`   | String | Class of the matched window rule.              |
-| `WIN_TITLE`   | String | Title of the matched window rule.              |
+| Variable Name      | Type   | Description                                    |
+| ------------------ | ------ | ---------------------------------------------- |
+| `ACTIVE_WIN_CLASS` | String | Class of the currently active window.          |
+| `ACTIVE_WIN_TITLE` | String | Title of the currently active window.          |
+| `LAYER_NAME`       | String | Name of the layer for the matched window rule. |
 
 ### Config
 
@@ -31,14 +31,12 @@ This document outlines the environment variables used in the script, detailing t
 
 ### Config Window Rules
 
-| Variable Name      | Type    | Description                                        |
-| ------------------ | ------- | -------------------------------------------------- |
-| `WIN_RULES_COUNT`  | Integer | Number of window rules defined in the config file. |
-| `WIN_CLASSES`      | Array   | List of window classes from the config file.       |
-| `WIN_TITLES`       | Array   | List of window titles from the config file.        |
-| `LAYER_NAMES`      | Array   | List of layer names from the config file.          |
-| `ACTIVE_WIN_CLASS` | String  | Class of the currently active window.              |
-| `ACTIVE_WIN_TITLE` | String  | Title of the currently active window.              |
+| Variable Name     | Type    | Description                                        |
+| ----------------- | ------- | -------------------------------------------------- |
+| `WIN_RULES_COUNT` | Integer | Number of window rules defined in the config file. |
+| `WIN_CLASSES`     | Array   | List of window classes from the config file.       |
+| `WIN_TITLES`      | Array   | List of window titles from the config file.        |
+| `LAYER_NAMES`     | Array   | List of layer names from the config file.          |
 
 ## Accessing Environment Variables
 
