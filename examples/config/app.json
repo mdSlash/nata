@@ -1,1 +1,18 @@
-
+{
+  "ip": "127.0.0.1",
+  "port": 10000,
+  "interval": 200,
+  "base_layer": "base",
+  "recipes": "~/.config/kanata/recipes.sh",
+  "window_rules": [
+    { "class": "Ferdium", "title": "ChatGPT", "layer": "ai_mode" },
+    { "class": "*", "title": "\\^nvim", "layer": "b" },
+    { "class": "Vivaldi", "title": "*", "layer": null },
+    {
+      "class": "^nvim$",
+      "title": "nvim - \\[Scratch]",
+      "layer": "vim_dashboard"
+    },
+    { "class": "*", "title": "*", "layer": true }
+  ]
+}
