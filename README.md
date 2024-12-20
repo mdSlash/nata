@@ -35,7 +35,7 @@
 To run **Nata** script, you will need the following dependencies installed on your system:
 
 - **nc**: A utility to send data to the **Kanata** server via TCP to change the layer.
-- **[jq](https://jqlang.github.io/jq/)**: A command-line JSON processor for managing data from the [config](#config) file.
+- **[jq](https://jqlang.github.io/jq/)**: A command-line JSON processor for managing data from the [config](#Configuration) file.
 
 #### Additional Requirements for Active Window Information
 
