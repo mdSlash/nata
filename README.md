@@ -47,6 +47,8 @@ To retrieve active window information such as window class and title, you will n
 
 #### For Wayland Users:
 
+These tools are typically installed by default if you are using:
+
 - **Hyprland**: [hyprctl](https://wiki.hyprland.org/Configuring/Using-hyprctl/)
 - **Sway**: [swaymsg](https://github.com/swaywm/sway/blob/master/swaymsg/swaymsg.1.scd)
 
@@ -59,42 +61,60 @@ To use **Nata** script:
 
 ## Configuration
 
-See the [config](/docs/config.md) documentation for more details.
+| Property                            | Description                                                                   |
+| ----------------------------------- | ----------------------------------------------------------------------------- |
+| [`ip`][prop_ip]                     | IP address                                                                    |
+| [`port`][prop_port]                 | Port number                                                                   |
+| [`interval`][prop_interval]         | Interval (in ms) for checking active window rules and changing layers.        |
+| [`base_layer`][prop_base_layer]     | Base layer for window rules.                                                  |
+| [`recipes`][prop_recipes]           | Location of the recipe script.                                                |
+| [`window_rules`][prop_window_rules] | If the active window matches the rule, it will change to the specified layer. |
+
+See the [config](/docs/config.md) doc for more details.
 
 ## Options
 
-| Option                         | Description                                                                                                               |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| [`-h`, `--help`][help]         | Display help message and exit.                                                                                            |
-| [`-v`, `--version`][version]   | Show script version and exit.                                                                                             |
-| [`-q`, `--quiet`][quiet]       | Run quietly; log errors only.                                                                                             |
-| [`-i`, `--interval`][interval] | Set update interval for checking the active window.                                                                       |
-| [`-p`, `--port`][port]         | Specify a TCP port or IP address with a port.                                                                             |
-| [`-C`, `--class`][class]       | Change layer if the argument matches the rule: `{ "class": "<VALUE>", "title": "*" }`.                                    |
-| [`-t`, `--title`][title]       | Change layer if the argument matches the rule: `{ "class": "*", "title": "<VALUE>" }`.                                    |
-| [`-l`, `--layer`][layer]       | Specify a layer name to switch to.                                                                                        |
-| [`-c`, `--config`][config]     | Path to the [config](#config) file in JSON format.                                                                        |
-| [`-r`, `--recipes`][recipes]   | Path to a script that runs in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) on layer change. |
+| Option                             | Description                                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| [`-h`, `--help`][opt_help]         | Display help message and exit.                                                                                            |
+| [`-v`, `--version`][opt_version]   | Show script version and exit.                                                                                             |
+| [`-q`, `--quiet`][opt_quiet]       | Run quietly; log errors only.                                                                                             |
+| [`-i`, `--interval`][opt_interval] | Set update interval for checking the active window.                                                                       |
+| [`-p`, `--port`][opt_port]         | Specify a TCP port or IP address with a port.                                                                             |
+| [`-C`, `--class`][opt_class]       | Change layer if the argument matches the rule: `{ "class": "<VALUE>", "title": "*" }`.                                    |
+| [`-t`, `--title`][opt_title]       | Change layer if the argument matches the rule: `{ "class": "*", "title": "<VALUE>" }`.                                    |
+| [`-l`, `--layer`][opt_layer]       | Specify a layer name to switch to.                                                                                        |
+| [`-c`, `--config`][opt_config]     | Path to the [config](#config) file in JSON format.                                                                        |
+| [`-r`, `--recipes`][opt_recipes]   | Path to a script that runs in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) on layer change. |
 
-See the [options](/docs/script-options.md) documentation for more details.
+See the [options](/docs/script-options.md) doc for more details.
 
 ### Recipes
 
-See the [Recipes](/docs/recipes.md) documentation for more details.
+See the [Recipes](/docs/recipes.md) doc for more details.
 
 ## Contributing
 
 We welcome contributions! If you find bugs or have suggestions for improvements, please open an [issue](https://github.com/mdSlash/nata/issues/new) or submit a pull request.
 
-<!--  -->
+<!-- CONFIG PROPERTIES -->
 
-[help]: /docs/script_options.md#-h---help
-[version]: /docs/script_options.md#-v---version
-[quiet]: /docs/script_options.md#-q---quiet
-[interval]: /docs/script_options.md#-i---interval
-[port]: /docs/script_options.md#-p---port
-[class]: /docs/script_options.md#-c---class
-[title]: /docs/script_options.md#-t---title
-[layer]: /docs/script_options.md#-l---layer
-[config]: /docs/script_options.md#-c---config
-[recipes]: /docs/script_options.md#-r---recipes
+[prop_ip]: /docs/config.md#ip
+[prop_port]: /docs/config.md#port
+[prop_interval]: /docs/config.md#interval
+[prop_base_layer]: /docs/config.md#base_layer
+[prop_recipes]: /docs/config.md#recipes
+[prop_window_rules]: /docs/config.md#window_rules
+
+<!-- OPTIONS -->
+
+[opt_help]: /docs/script_options.md#-h---help
+[opt_version]: /docs/script_options.md#-v---version
+[opt_quiet]: /docs/script_options.md#-q---quiet
+[opt_interval]: /docs/script_options.md#-i---interval
+[opt_port]: /docs/script_options.md#-p---port
+[opt_class]: /docs/script_options.md#-c---class
+[opt_title]: /docs/script_options.md#-t---title
+[opt_layer]: /docs/script_options.md#-l---layer
+[opt_config]: /docs/script_options.md#-c---config
+[opt_recipes]: /docs/script_options.md#-r---recipes
