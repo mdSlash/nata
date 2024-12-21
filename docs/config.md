@@ -86,6 +86,9 @@ Each window rule consists of three keys:
 - [`title`](#title): Matches the title of the window.
 - [`layer`](#layer): Determines the layer to switch to.
 
+> [!NOTE]
+> **Nata** does not currently support classes with the [Sway](https://swaywm.org) window manager. Therefore, you can either omit the class key or set it to `*` to match any class.
+
 ### Regex Patterns
 
 [Regex](https://en.wikipedia.org/wiki/Regular_expression) patterns can be used to match specific window classes or titles:
