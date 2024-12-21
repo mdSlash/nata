@@ -18,7 +18,7 @@
 
 ### Download the Script and Make It Executable
 
-1. **Manual Download**: Download the **Nata** [script](/nata) and make it executable:
+1. **Manual Download**: Download the [Nata script](/nata) and make it executable:
 
    ```bash
    chmod +x nata
@@ -61,6 +61,8 @@ To use **Nata** script:
 
 ## Configuration
 
+Here are the properties you can include in your configuration file:
+
 | Property                            | Description                                                                   |
 | ----------------------------------- | ----------------------------------------------------------------------------- |
 | [`ip`][prop_ip]                     | IP address                                                                    |
@@ -73,6 +75,8 @@ To use **Nata** script:
 See the [config](/docs/config.md) doc for more details.
 
 ## Options
+
+Here is a list of available options for the [Nata script](/nata):
 
 | Option                             | Description                                                                                                               |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
