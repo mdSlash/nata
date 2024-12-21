@@ -113,9 +113,12 @@ In this case, `nvim - \\[Scratch]` matches `nvim - [Scratch]` literally, where `
 
 `*` acts as a wildcard to match any window class or title.
 
-```json
-{ "class": "*", "title": "TITLE", "layer": "LayerName" }
-{ "class": "CLASS", "title": "*", "layer": "LayerName" }
+```jsonc
+// Matches the "Code - OSS" title, regardless of the class, and switches to the "vs_code" layer
+{ "class": "*", "title": "Code - OSS", "layer": "vs_code" },
+
+// Matches the "Vivaldi" class with any title but does nothing since the layer is null
+{ "class": "Vivaldi", "title": "*", "layer": null },
 ```
 
 This rule matches any window based on either its title or class.
