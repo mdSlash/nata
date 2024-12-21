@@ -53,7 +53,7 @@ Sets the interval (in milliseconds) for checking the active window rule and chan
 
 Defines the base layer for window rules. Replace `"BaseLayer"` with the desired base layer name.
 
-You can use this in the `layer` field to avoid repeating the base layer name in each [rule](#window_rules). For example:
+You can use this in the `layer` key to avoid repeating the base layer name in each [rule](#window_rules). For example:
 
 ```json
 { "layer": true }
