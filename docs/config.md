@@ -12,7 +12,7 @@ To see a sample configuration file, see: [`config.json`](../examples/config.json
 - [`base_layer`](#base_layer)
 - [`recipes`](#recipes)
 - [`window_rules`](#window_rules)
-- [Rule Priority](rule-priority)
+- [Rule Priority](#rule-priority)
 
 ## `ip`
 
