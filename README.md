@@ -78,18 +78,18 @@ See the [config](/docs/config.md) doc for more details.
 
 Here is a list of available options for the [Nata script](/nata):
 
-| Option                             | Description                                                                                                               |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [`-h`, `--help`][opt_help]         | Display help message and exit.                                                                                            |
-| [`-v`, `--version`][opt_version]   | Show script version and exit.                                                                                             |
-| [`-q`, `--quiet`][opt_quiet]       | Run quietly; log errors only.                                                                                             |
-| [`-i`, `--interval`][opt_interval] | Set update interval for checking the active window.                                                                       |
-| [`-p`, `--port`][opt_port]         | Specify a TCP port or IP address with a port.                                                                             |
-| [`-C`, `--class`][opt_class]       | Change layer if the value matches the rule: `{ "class": "<VALUE>", "title": "*" }`.                                       |
-| [`-t`, `--title`][opt_title]       | Change layer if the value matches the rule: `{ "class": "*", "title": "<VALUE>" }`.                                       |
-| [`-l`, `--layer`][opt_layer]       | Specify a layer name to switch to and exit.                                                                               |
-| [`-c`, `--config`][opt_config]     | Path to the [config](#config) file in JSON format.                                                                        |
-| [`-r`, `--recipes`][opt_recipes]   | Path to a script that runs in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) on layer change. |
+| Option                             | Description                                                                         |
+| ---------------------------------- | ----------------------------------------------------------------------------------- |
+| [`-h`, `--help`][opt_help]         | Display help message and exit.                                                      |
+| [`-v`, `--version`][opt_version]   | Show script version and exit.                                                       |
+| [`-q`, `--quiet`][opt_quiet]       | Run quietly; log errors only.                                                       |
+| [`-i`, `--interval`][opt_interval] | Set update interval for checking the active window.                                 |
+| [`-p`, `--port`][opt_port]         | Specify a TCP port or IP address with a port.                                       |
+| [`-C`, `--class`][opt_class]       | Change layer if the value matches the rule: `{ "class": "<VALUE>", "title": "*" }`. |
+| [`-t`, `--title`][opt_title]       | Change layer if the value matches the rule: `{ "class": "*", "title": "<VALUE>" }`. |
+| [`-l`, `--layer`][opt_layer]       | Specify a layer name to switch to and exit.                                         |
+| [`-c`, `--config`][opt_config]     | Path to the [config](/docs/config.md) file in JSON format.                          |
+| [`-r`, `--recipes`][opt_recipes]   | Path to a script that runs in the background on layer change.                       |
 
 See the [options](/docs/script_options.md) doc for more details.
 
