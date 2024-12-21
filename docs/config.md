@@ -161,17 +161,25 @@ Here’s an example of rule prioritization:
   // Matches the "Vivaldi" class with any title but does nothing since the layer is null
   { "class": "Vivaldi", "title": "*", "layer": null },
 
-  // Matches the exact "nvim" class with the title "nvim - [Scratch]" and switches to the "vim_dashboard" layer
+  // Matches the exact "nvim" class with the title "nvim - [Scratch]" and switches to the "vim_scratch" layer
   {
     "class": "^nvim$",
     "title": "nvim - \\[Scratch]",
-    "layer": "vim_dashboard"
+    "layer": "vim_scratch"
   },
 
   // Fallback rule: matches any window (with any class or title) and switches to the base layer if no other match
   { "class": "*", "title": "*", "layer": true }
 ]
 ```
+
+- **First Rule**: Matches the `Ferdium` class with the title `ChatGPT` and switches to the `ai_mode` layer.  
+- **Second Rule**: Matches any class (`*`) with the title `Code - OSS` and switches to the `vs_code` layer.  
+- **Third Rule**: Matches the `Vivaldi` class with any title (`*`), but since the layer is `null`, it takes no action.  
+- **Fourth Rule**: Matches a window with the exact class `nvim` and the title `nvim - [Scratch]` and switches to the `vim_scratch` layer.  
+- **Fifth Rule**: The fallback rule matches any window (with any class or title) and either switches to the base layer if [`layer`](#layer) is set to `true`, or does nothing if set to `false` or `null`.
+
+This order ensures that more specific rules are applied first, and the fallback rule is only used if no other rules match.
 
 See [config.json](../examples/config.json) for a sample configuration file.
 
