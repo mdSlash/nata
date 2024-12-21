@@ -87,7 +87,7 @@ Each window rule consists of three keys:
 - [`layer`](#layer): Determines the layer to switch to.
 
 > [!NOTE]
-> **Nata** does not currently support classes with the [Sway](https://swaywm.org) window manager. Therefore, you can either omit the `class` key or set it to `*` to match any class.
+> **Nata** does not currently support classes with the [Sway](https://swaywm.org) window manager. Therefore, you can either omit the `class` key or set it to [`*` wildcard](#-wildcard) to match any class.
 
 ### Regex Patterns
 
