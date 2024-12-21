@@ -1,6 +1,6 @@
 # Nata Script Options
 
-This document lists all **Nata** script options in detail.
+This document lists all [Nata script](../nata) options in detail.
 
 ## Table of Contents
 
