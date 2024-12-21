@@ -91,7 +91,7 @@ Here is a list of available options for the [Nata script](/nata):
 | [`-c`, `--config`][opt_config]     | Path to the [config](#config) file in JSON format.                                                                        |
 | [`-r`, `--recipes`][opt_recipes]   | Path to a script that runs in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) on layer change. |
 
-See the [options](/docs/script-options.md) doc for more details.
+See the [options](/docs/script_options.md) doc for more details.
 
 ### Recipes
 
