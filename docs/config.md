@@ -82,8 +82,8 @@ You can also use [Nata environment variables](../docs/env_vars.md) inside your [
 
 Each window rule consists of three keys:
 
-- [`class`](#class): Matches the class of the window.
-- [`title`](#title): Matches the title of the window.
+- `class`: Matches the class of the window.
+- `title`: Matches the title of the window.
 - [`layer`](#layer): Determines the layer to switch to.
 
 > [!NOTE]
