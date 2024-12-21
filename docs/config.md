@@ -143,7 +143,7 @@ It can be useful if no other window rule matches the active window. You can set 
 
 ## Rule Priority
 
-The priority of window rules is determined by their order in the configuration file. When multiple rules apply to the same window, the first matching rule in the list will be the one that takes effect. This means more specific rules should appear before general ones. Here’s how the rules are processed based on the order:
+The priority of window rules is determined by their order in the [`config.json`](..//examples/config.json#L7). When multiple rules apply to the same window, the first matching rule in the list will be the one that takes effect. This means more specific rules should appear before general ones. Here’s how the rules are processed based on the order:
 
 1. **Most Specific First**: The first rule that matches the window will be applied.
 2. **Wildcard and Fallback Last**: Wildcard (`*`) rules or fallback rules should be placed at the end to ensure they don't override more specific matches.
