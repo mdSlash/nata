@@ -7,6 +7,7 @@ This document lists all **Nata** script options in detail.
 - [`-h`, `--help`](#-h---help)
 - [`-v`, `--version`](#-v---version)
 - [`-q`, `--quiet`](#-q---quiet)
+- [`-R`, `--rule`](#-r---rule)
 - [`-i`, `--interval`](#-i---interval)
 - [`-p`, `--port`](#-p---port)
 - [`-C`, `--class`](#-c---class)
@@ -40,6 +41,17 @@ This document lists all **Nata** script options in detail.
 | **DESC** | Run in quiet mode; logs errors only, without logging informational messages or warnings. |
 
 ---
+
+### `-R`, `--rule`
+
+|          |                                                                              |
+| -------- | ---------------------------------------------------------------------------- |
+| **DESC** | Displays detailed information about the active window and the matching rule. |
+
+This option can be useful for testing whether the active window matches any rules defined in your configuration.
+
+---
+
 
 ### `-i`, `--interval`
 
@@ -81,7 +93,7 @@ This document lists all **Nata** script options in detail.
 | **DESC** | Change to the layer and exit if the specified argument matches the rule: `{ "class": "<VALUE>", "title": "*" }`. |
 | **ARG**  | `WINDOW_CLASS`                                                                                                   |
 
-For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules) documentation.
+For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules) doc.
 
 ---
 
@@ -92,7 +104,7 @@ For more information about rules, see the [window rules](https://github.com/mdSl
 | **DESC** | Change to the layer and exit if the specified argument matches the rule: `{ "class": "*", "title": "<VALUE>" }`. |
 | **ARG**  | `WINDOW_TITLE`                                                                                                   |
 
-For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules) documentation.
+For more information about rules, see the [window rules](https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules) doc.
 
 ---
 
@@ -113,7 +125,7 @@ For more information about rules, see the [window rules](https://github.com/mdSl
 | **ARG**  | `LAYER_NAME`                                        |
 | **DEF**  | `~/.config/kanata/app.json`                         |
 
-For more information and examples, see the [config](https://github.com/mdSlash/nata/blob/main/docs/config.md) documentation.
+For more information and examples, see the [config](https://github.com/mdSlash/nata/blob/main/docs/config.md) doc.
 
 ---
 
@@ -125,7 +137,7 @@ For more information and examples, see the [config](https://github.com/mdSlash/n
 | **ARG**  | `SCRIPT_PATH`                                                                                                                                        |
 | **DEF**  | `~/.config/kanata/recipes.sh`                                                                                                                        |
 
-For more information and examples, see the [recipes](https://github.com/mdSlash/nata/blob/main/docs/recipes.md) documentation.
+For more information and examples, see the [recipes](https://github.com/mdSlash/nata/blob/main/docs/recipes.md) doc.
 
 ---
 
