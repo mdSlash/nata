@@ -131,7 +131,7 @@ The `*` wildcard also serves as a fallback rule, applying to any window (regardl
 { "class": "*", "title": "*", "layer": "base" }
 ```
 
-It can be useful if no other window rule matches the active window. You can set `layer` to `true` to switch to the base layer specified in [base_layer](#base_layer), or to `false` or `null` to do nothing.
+It can be useful if no other window rule matches the active window. You can set `layer` to `true` to switch to the [base layer](#base_layer), or to `false` or `null` to do nothing.
 
 #### `layer`
 
