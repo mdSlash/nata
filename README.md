@@ -87,7 +87,7 @@ Here is a list of available options for the [Nata script](/nata):
 | [`-p`, `--port`][opt_port]         | Specify a TCP port or IP address with a port.                                                                             |
 | [`-C`, `--class`][opt_class]       | Change layer if the value matches the rule: `{ "class": "<VALUE>", "title": "*" }`.                                       |
 | [`-t`, `--title`][opt_title]       | Change layer if the value matches the rule: `{ "class": "*", "title": "<VALUE>" }`.                                       |
-| [`-l`, `--layer`][opt_layer]       | Specify a layer name to switch to.                                                                                        |
+| [`-l`, `--layer`][opt_layer]       | Specify a layer name to switch to and exit.                                                                               |
 | [`-c`, `--config`][opt_config]     | Path to the [config](#config) file in JSON format.                                                                        |
 | [`-r`, `--recipes`][opt_recipes]   | Path to a script that runs in the [background](https://www.gnu.org/software/bash/manual/bash.html#Lists) on layer change. |
 
