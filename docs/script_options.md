@@ -122,7 +122,7 @@ For more information about rules, see the [window rules](https://github.com/mdSl
 |          |                                                     |
 | -------- | --------------------------------------------------- |
 | **DESC** | Specify the path to the config file in JSON format. |
-| **ARG**  | `LAYER_NAME`                                        |
+| **ARG**  | `CONFIG_FILE`                                       |
 | **DEF**  | `~/.config/kanata/app.json`                         |
 
 For more information and examples, see the [config](https://github.com/mdSlash/nata/blob/main/docs/config.md) doc.
