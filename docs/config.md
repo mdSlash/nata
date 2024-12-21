@@ -67,7 +67,7 @@ You can use this in the `layer` field to avoid repeating the base layer name in 
 
 Specifies the location of the recipe script. This file contains additional configuration or scripts to run. Replace the value with the path to your script file.
 
-You can also use **Nata** [environment variables](../docs/env_vars.md) inside your [recipes](../docs/recipes.md) script.
+You can also use [Nata environment variables](../docs/env_vars.md) inside your [recipes](../docs/recipes.md) script.
 
 ## `window_rules`
 
