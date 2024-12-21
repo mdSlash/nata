@@ -56,7 +56,7 @@ These tools are typically installed by default if you are using:
 
 To use **Nata** script:
 
-1. Configure your [configuration](#config) file.
+1. Configure your [configuration](#configuration) file.
 2. Execute the script with the desired [options](#options) if necessary.
 
 ## Configuration
