@@ -14,7 +14,7 @@ For example, if you want to send a notification every time the layer changes, yo
 
 ```bash
 # Send a notification with the layer name
-notify-send "Current Layer" "Layer Name: $LAYER_NAME"
+notify-send -r 12345 "Current Layer" "Layer Name: $LAYER_NAME"
 ```
 
 In this example, `$LAYER_NAME` is an [environment variables](/docs/env_vars.md) provided to the recipes script.
