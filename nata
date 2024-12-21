@@ -1,1 +1,629 @@
+#!/usr/bin/env bash
 
+# Versioning & Project Information
+readonly SCRIPT_VERSION="1.0.0" # NOTE: Update version number when modifying the script.
+readonly PROJECT_NAME="nata"
+readonly PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
+
+# OPTIONS
+declare -a OPTIONS # Stores entered options and their values if specified
+declare WIN_CLASS  # The class of the matched window rule or "class" option.
+declare WIN_TITLE  # The title of the matched window rule or "title" option.
+
+# WINDOW MATCHING RULE
+declare -x ACTIVE_WIN_CLASS # The class of the active window or "class" option..
+declare -x ACTIVE_WIN_TITLE # The title of the active window or "title" option..
+declare -x LAYER_NAME       # Layer name for the matched window rule or "layer" option.
+
+# CONFIG
+declare -x CONFIG_FILE="$HOME/.config/kanata/config.json"
+declare -x RECIPES_SCRIPT="$HOME/.config/kanata/recipes.sh"
+declare -x CONFIG_DATA # Stores the config data from the config file as JSON format.
+declare -x BASE_LAYER
+declare -x INTERVAL=0.2 # 200 milliseconds
+declare -x IP=127.0.0.1
+declare -x PORT=10000
+
+# CONFIG WINDOW RULE
+declare -xi WIN_RULES_COUNT=0
+declare -xa WIN_CLASSES # An array of window class patterns for matching.
+declare -xa WIN_TITLES  # An array of window title patterns for matching.
+declare -xa LAYER_NAMES # An array of layer names corresponding to the window rules.
+
+# COLOR
+readonly GREEN="\e[0;32m"
+readonly YELLOW="\e[0;33m"
+readonly RED="\e[0;31m"
+readonly BLUE="\e[0;34m"
+readonly NC="\e[0m" # No color
+
+# Changes the current layer to the specified layer name by sending a JSON payload
+# to a designated IP and port using netcat. If a valid recipes script is defined,
+# it will be executed in the background.
+change_layer() {
+  local layer_name="$1"
+  [[ -z "${layer_name}" ]] && log -error "Layer name is empty." && exit 1
+
+  # Construct the JSON payload and send it using netcat (nc)
+  printf '{"ChangeLayer":{"new":"%s"}}\n' "$layer_name" |
+    timeout 1 nc "$IP" "$PORT" >/dev/null 2>&1 &
+
+  # Execute the user-defined recipes script if the RECIPES_SCRIPT is valid.
+  if check_recipes_script; then
+    # shellcheck disable=SC1090
+    $RECIPES_SCRIPT &
+    opt_exists layer && log -warn "Recipes detected."
+  fi
+
+  return 0
+}
+
+# Outputs a JSON representation of the active window's class and title,
+# including the matching window rule, or null if no match is found.
+print_rule() {
+  local -i rule_found=0
+
+  set_win_rule && ((rule_found++))
+
+  if [[ $rule_found -eq 1 ]]; then
+    jq -n \
+      --arg active_class "$ACTIVE_WIN_CLASS" \
+      --arg active_title "$ACTIVE_WIN_TITLE" \
+      --arg rule_class "$WIN_CLASS" \
+      --arg rule_title "$WIN_TITLE" \
+      --arg layer "$LAYER_NAME" \
+      '{ active_window: { class: $active_class, title: $active_title },
+    window_rule: {class: $rule_class, title: $rule_title, layer: $layer } }'
+    return 0
+  else
+    jq -n \
+      --arg class "$ACTIVE_WIN_CLASS" \
+      --arg title "$ACTIVE_WIN_TITLE" \
+      '{ active_window: { class: $class, title: $title }, window_rule: null }'
+    return 1
+  fi
+}
+
+# Updates the global variables related to the current active window's class, title,
+# and associated layer name based on predefined window rules.
+set_win_rule() {
+  if ! opt_exists class && ! opt_exists title; then
+    local prev_win_class=$ACTIVE_WIN_CLASS
+    local prev_win_title=$ACTIVE_WIN_TITLE
+
+    win::set_active_win_info
+
+    # Check if the active window class and title have changed
+    [[ "$ACTIVE_WIN_CLASS" == "$prev_win_class" ]] &&
+      [[ "$ACTIVE_WIN_TITLE" == "$prev_win_title" ]] &&
+      return 1
+  fi
+
+  for ((i = 0; i < WIN_RULES_COUNT; i++)); do
+    if [[ ${WIN_CLASSES[i]} == "*" ]] || [[ "$ACTIVE_WIN_CLASS" =~ ${WIN_CLASSES[i]} ]]; then
+      if win::is_win_title_match "${WIN_TITLES[i]}"; then
+        WIN_CLASS="${WIN_CLASSES[i]}"
+        WIN_TITLE="${WIN_TITLES[i]}"
+        LAYER_NAME="${LAYER_NAMES[i]}"
+        break
+      fi
+    fi
+  done
+
+  if [[ $LAYER_NAME == "false" ]] || [[ $LAYER_NAME == "null" ]]; then
+    return 1
+  elif [[ -z "${LAYER_NAME// /}" ]]; then
+    if ! opt_exists rule; then
+      log -warn "Layer change failed: layer name value is empty."
+      log -info "To disable layer changes in the active window, set the value to \
+    \n${BLUE}false${NC} or ${BLUE}null${NC} in your window rule within the config file."
+    fi
+    return 1
+  else
+    return 0
+  fi
+}
+
+################################################################################
+###                             HELPER FUNCTIONS                             ###
+################################################################################
+
+log() {
+  local level=$1
+  local msg="$2"
+
+  case "$level" in
+  -error) echo -e "${RED}[ERROR]$NC $msg" >&2 ;;
+  -info) opt_exists quiet && return 0 || echo -e "${GREEN}[INFO]$NC $msg" ;;
+  -warn) opt_exists quiet && return 0 || echo -e "${YELLOW}[WARN]$NC $msg" >&2 ;;
+  *) echo "$2" ;;
+  esac
+}
+
+check_opt_value() {
+  local opt="$1"
+  local value="$2"
+
+  if [[ -z "${value// /}" ]]; then
+    log -error "The value for the ${BLUE}-${opt}${NC} option cannot be empty."
+    exit 1
+  fi
+
+  if [[ "$value" == -* ]]; then
+    log -error "Invalid value ${RED}${value}${NC} for the ${BLUE}-${opt}${NC} option."
+    exit 1
+  fi
+}
+
+get_prop() { jq -r ".$2" <<<"$1"; } # $1 => JSON data, $2 => prop path
+
+is_integer() { [[ $1 =~ ^[0-9]+$ ]] || return 1; }
+
+opt_exists() {
+  for opt in "${OPTIONS[@]}"; do [[ $opt == "$1"* ]] && return 0; done
+  return 1
+}
+
+check_cmd() {
+  local cmd=$1
+
+  command -v "$cmd" >/dev/null 2>&1 && return 0
+  log -error "${RED}'$cmd' is not installed.${NC}"
+  log -info "Please install ${GREEN}${cmd}${NC} to proceed."
+  return 1
+}
+
+check_tcp_port() {
+  [[ -z "$PORT" ]] && {
+    if opt_exists layer; then
+      log -error "A port number must be specified."
+      log -info "Use ${BLUE}-p ${YELLOW}<PORT${NC} or ${YELLOW}IP:PORT>${NC} to specify the port number."
+    else
+      log -error "Port value is empty."
+      log -info "Please ensure to specify a value for ${BLUE}port${NC} in ${GREEN}${CONFIG_FILE}${NC}."
+      log -info "Example configuration: ${BLUE}{ \"port\": 10000 }${NC}"
+    fi
+    return 1
+  }
+
+  is_integer "$PORT" || {
+    log -error "The port number must be an integer." && return 1
+  }
+
+  ((PORT >= 0 && PORT <= 65535)) && return 0
+  log -error "The port number must be an integer between ${YELLOW}0${NC} and ${YELLOW}65535${NC}."
+  return 1
+}
+
+check_recipes_script() {
+  opt_exists recipes && {
+    if [[ -x $RECIPES_SCRIPT ]]; then
+      return 0
+    else
+      log -error "The recipes script is not executable or does not exist: ${RED}${RECIPES_SCRIPT}${NC}"
+      return 1
+    fi
+  }
+
+  [[ -f $RECIPES_SCRIPT ]] || return 1
+
+  if [[ -x $RECIPES_SCRIPT ]]; then
+    return 0
+  else
+    log -error "The recipes script is not executable: ${RED}${RECIPES_SCRIPT}${NC}"
+    return 1
+  fi
+}
+
+################################################################################
+###                               Window Rules                               ###
+################################################################################
+
+win::is_win_title_match() {
+  local win_title_pattern=$1
+
+  if [[ $ACTIVE_WIN_TITLE =~ $win_title_pattern ]] ||
+    [[ $win_title_pattern == "*" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Set the class and title of the active window
+win::set_active_win_info() {
+  local win_info
+  local no_active_win_msg="Failed to detect the active window information."
+
+  case $XDG_SESSION_TYPE in
+  x11)
+    check_cmd xdotool || exit 1
+    ACTIVE_WIN_CLASS=$(xdotool getactivewindow getwindowclassname)
+
+    [[ -z $ACTIVE_WIN_CLASS ]] && log -warn "$no_active_win_msg" && return 1
+
+    ACTIVE_WIN_TITLE=$(xdotool getactivewindow getwindowname)
+    ;;
+  wayland)
+    if [[ $XDG_CURRENT_DESKTOP == "Hyprland" ]]; then
+      check_cmd hyprctl || exit 1
+
+      win_info=$(hyprctl -j activewindow)
+
+      [[ -z $win_info ]] && log -warn "$no_active_win_msg" && return 1
+
+      ACTIVE_WIN_CLASS="$(get_prop "$win_info" class)"
+      ACTIVE_WIN_TITLE="$(get_prop "$win_info" title)"
+    elif swaymsg >/dev/null 2>&1; then
+      ACTIVE_WIN_TITLE=$(swaymsg -rt get_tree | jq -r '.. | objects | select(.focused == true) | .name')
+
+      [[ -z $ACTIVE_WIN_TITLE ]] && log -warn "$no_active_win_msg" && return 1
+    else
+      log -error "$no_active_win_msg"
+      log -info "Please consider reporting the issue on GitHub: ${BLUE}${PROJECT_REPO}/issues/new${NC}"
+      exit 1
+    fi
+    ;;
+  *) log -error "Unknown session type: ${RED}${XDG_SESSION_TYPE}${NC}" && exit 1 ;;
+  esac
+}
+
+################################################################################
+###                              Configuration                               ###
+################################################################################
+# Handles the user JSON configuration file.
+# Ensure the configuration file is properly formatted.
+# Example: config.json
+################################################################################
+
+config::set_tcp_ip() {
+  opt_exists class || opt_exists title || opt_exists port && return 0
+
+  local ip
+  ip=$(echo "$CONFIG_DATA" | jq -r '.ip')
+
+  if [[ -n "$ip" ]]; then
+    readonly IP="$ip"
+  else
+    readonly IP # 127.0.0.1 (Default)
+  fi
+}
+
+config::set_tcp_port() {
+  opt_exists class || opt_exists title || opt_exists port && return 0
+
+  local port
+  ip=$(get_prop "$CONFIG_DATA" port)
+
+  if [[ -n "$port" ]]; then
+    readonly PORT="$port"
+  else
+    readonly PORT # 10000 (Default)
+  fi
+
+  check_tcp_port || exit 1
+}
+
+config::set_update_interval() {
+  opt_exists class || opt_exists title && return 0
+
+  local interval
+
+  if opt_exists interval; then
+    interval=$INTERVAL
+  else
+    interval=$(get_prop "$CONFIG_DATA" interval)
+
+    if [[ -z "$interval" ]]; then
+      readonly INTERVAL # INTERVAL=0.2 (Default)
+      return 0
+    fi
+  fi
+
+  if ! is_integer "$interval"; then
+    log -error "The update interval value must be an integer."
+    exit 1
+  fi
+
+  if [[ "$interval" -lt 50 ]]; then
+    log -warn "Update interval ${YELLOW}${INTERVAL}${NC} is below ${GREEN}50ms${NC}, which may cause high CPU usage."
+    log -info "Consider a higher interval; a range of ${GREEN}50${NC} to ${GREEN}200${NC} is recommended."
+  elif [[ "$interval" -gt 200 ]]; then
+    log -warn "Update interval ${YELLOW}${INTERVAL}${NC} exceeds ${GREEN}200ms${NC}, which may lead to reduced responsiveness."
+    log -info "Consider lowering the interval; a range of ${GREEN}50${NC} to ${GREEN}200${NC} is recommended."
+  fi
+
+  # Convert interval from milliseconds to seconds
+  INTERVAL=$(awk "BEGIN {printf \"%.2f\", $interval / 1000}")
+  readonly INTERVAL
+}
+
+config::set_recipes_script() {
+  local recipes_path
+  recipes_path=$(get_prop "$CONFIG_DATA" recipes)
+
+  if [[ -n "$recipes_path" ]]; then
+    readonly RECIPES_SCRIPT="${recipes_path/#\~/$HOME}" # Expand the tilde
+  else
+    readonly RECIPES_SCRIPT # ~/.config/kanata/recipes.sh (Default)
+  fi
+
+  if [[ -f "$RECIPES_SCRIPT" ]]; then
+    opt_exists rule || log -warn "Recipes detected."
+  else
+    log -info "No recipes found."
+  fi
+}
+
+config::set_win_classes() {
+  mapfile -t WIN_CLASSES < <(get_prop "$CONFIG_DATA" window_rules[].class)
+  readonly WIN_CLASSES
+}
+
+config::set_win_titles() {
+  mapfile -t WIN_TITLES < <(get_prop "$CONFIG_DATA" window_rules[].title)
+  readonly WIN_TITLES
+}
+
+config::set_layer_names() {
+  mapfile -t LAYER_NAMES < <(get_prop "$CONFIG_DATA" window_rules[].layer)
+
+  for ((i = 0; i < WIN_RULES_COUNT; i++)); do
+    if [[ "${LAYER_NAMES[i]}" == "true" ]]; then
+      [[ -n $BASE_LAYER ]] && LAYER_NAMES[i]="$BASE_LAYER" || LAYER_NAMES[i]=""
+    fi
+  done
+
+  readonly LAYER_NAMES
+}
+
+config::set_config_data() {
+  [[ -s "$CONFIG_FILE" ]] || {
+    log -error "${RED}${CONFIG_FILE}${NC} is empty." && exit 1
+  }
+
+  if ! jq empty "$CONFIG_FILE" 2>/dev/null; then
+    log -error "The config file contains invalid JSON: ${RED}${CONFIG_FILE}${NC}"
+    log -info "Please check the file for syntax errors or formatting issues."
+    exit 1
+  fi
+
+  CONFIG_DATA=$(cat "$CONFIG_FILE")
+  readonly CONFIG_DATA
+}
+
+config::set_win_rules_count() {
+  WIN_RULES_COUNT=$(jq ".window_rules | length" <<<"$CONFIG_DATA")
+  readonly WIN_RULES_COUNT
+
+  if [[ $WIN_RULES_COUNT -eq 0 ]]; then
+    log -error "No window rules found in ${RED}$CONFIG_FILE${NC}."
+    exit 1
+  fi
+}
+
+config::set_base_layer() {
+  BASE_LAYER=$(get_prop "$CONFIG_DATA" base_layer)
+  readonly BASE_LAYER
+}
+
+config::load_config() {
+  [[ -f "$CONFIG_FILE" ]] || {
+    if opt_exists config; then
+      log -error "${RED}${CONFIG_FILE}${NC} file doesn't exist." && return 1
+    else
+      log -error "A config file must be specified."
+      log -info "Use ${BLUE}-c ${YELLOW}<config_file>${NC} to specify the config file."
+      return 1
+    fi
+  }
+
+  config::set_config_data # IMPORTANT: This should be called first
+
+  # Call functions with assigned numbers first, in order of their numbers.
+  # Functions without assigned numbers can run in any order.
+  config::set_win_rules_count #1
+  config::set_tcp_ip          #
+  config::set_tcp_port        #
+  config::set_update_interval #
+  config::set_win_classes     #
+  config::set_win_titles      #
+  config::set_base_layer      #1
+  config::set_layer_names     #2
+  config::set_recipes_script  #
+}
+
+################################################################################
+###                                User Guide                                ###
+################################################################################
+# Provides help and usage information for the script.
+# Use the -h or --help option to display this information.
+# Example: nata --help
+################################################################################
+
+print_options() {
+  local script_name
+  local green="\e[1;32m" # Bold green color
+
+  if [[ $0 =~ ^/home/$(whoami)/.local/bin/ ]]; then
+    script_name="${0##*/}"
+  else
+    script_name=$0
+  fi
+
+  cat <<EOF
+${green}Usage:${NC} $script_name ${BLUE}[options]${NC}
+
+  Nata is an application-aware switching layer for Kanata.
+
+  For comprehensive documentation for Nata, please see:
+  ${GREEN}https://github.com/mdSlash/nata/blob/main/docs/script_options.md${NC}
+
+${green}OPTIONS:${NC}
+
+  ${BLUE}-h, --help${NC}
+    Display the help message and exit.
+
+  ${BLUE}-v, --version${NC}
+    Show the script version and exit.
+
+  ${BLUE}-q, --quiet${NC}
+    Run in quiet mode; logs errors only, without logging informational messages or warnings.
+
+  ${BLUE}-R, --rule${NC}
+    Displays detailed information about the active window and the matching rule.
+
+    See: ${GREEN}https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules${NC}
+
+  ${BLUE}-i, --interval ${YELLOW}<N>${NC}
+    Set the update interval for checking the active window and changing the layer.
+    ${GREEN}(Default) ${YELLOW}200${NC}
+
+  ${BLUE}-p, --port ${YELLOW}<PORT or IP:PORT>${NC}
+    Specify a TCP port or an IP address with a port.
+    ${GREEN}(Default) ${YELLOW}127.0.0.1:10000${NC}
+
+  ${BLUE}-C, --class ${YELLOW}<WINDOW_CLASS>${NC}
+    Change to the layer and exit if the specified value matches the rule:
+    ${YELLOW}{ "class": "<VALUE>", "title": "*" }${NC}
+
+  ${BLUE}-t, --title ${YELLOW}<WINDOW_TITLE>${NC}
+    Change to the layer and exit if the specified value matches the rule:
+    ${YELLOW}{ "class": "*", "title": " <VALUE>" }${NC}
+
+  ${BLUE}-l, --layer ${YELLOW}<LAYER_NAME>${NC}
+    Specify a layer name to switch to that layer and exit.
+
+  ${BLUE}-c, --config ${YELLOW}<CONFIG_FILE>${NC}
+    Specify the path to the config file.
+    ${GREEN}(Default) ${YELLOW}~/.config/kanata/config.json${NC}
+
+    See: ${GREEN}https://github.com/mdSlash/nata/blob/main/docs/config.md${NC}
+
+  ${BLUE}-r, --recipes ${YELLOW}<SCRIPT_PATH>${NC}
+    Specify the path to a script that will run in the background whenever the layer changes.
+    ${GREEN}(Default) ${YELLOW}~/.config/kanata/recipes.sh${NC}
+
+    See: ${GREEN}https://github.com/mdSlash/nata/blob/main/docs/recipes.md${NC}
+EOF
+}
+
+################################################################################
+####                              MAIN FUNCTION                              ###
+################################################################################
+
+main() {
+  # Parse options
+  while [[ $# -gt 0 ]]; do
+    local opt="$1"
+    local value="$2" # Option value (if specified)
+
+    if [[ $opt == "-"* ]]; then
+
+      opt="${opt#"${opt%%[!-]*}"}" # Remove all leading dashes
+
+      case "$opt" in
+      c | config)
+        check_opt_value "$opt" "$value"
+        OPTIONS+=("config $value")
+        readonly CONFIG_FILE=$value
+        ;;
+      C | class)
+        check_opt_value "$opt" "$value"
+        OPTIONS+=("class $value")
+        readonly ACTIVE_WIN_CLASS=$value
+        ;;
+      t | title)
+        check_opt_value "$opt" "$value"
+        OPTIONS+=("title $value")
+        readonly ACTIVE_WIN_TITLE=$value
+        ;;
+      l | layer)
+        check_opt_value "$opt" "$value"
+        OPTIONS+=("layer $value")
+        LAYER_NAME=$value
+        ;;
+      i | interval)
+        check_opt_value "$opt" "$value" ||
+          { log -error "The update interval number must be an integer." && exit 1; }
+        OPTIONS+=("interval $value")
+        INTERVAL=$value
+        ;;
+      p | port)
+        check_opt_value "$opt" "$value"
+        OPTIONS+=("port $value")
+        if [[ "$value" == *:* ]]; then
+          readonly IP="${value%%:*}"  # Get the part before the first colon
+          readonly PORT="${value#*:}" # Get the part after the first colon
+        else
+          readonly IP # 127.0.0.1 (Default)
+          readonly PORT=$value
+        fi
+        check_tcp_port || exit 1
+        ;;
+      r | recipes)
+        check_opt_value "$opt" "$value"
+        OPTIONS+=("recipes $value")
+        RECIPES_SCRIPT="$value"
+        check_recipes_script || exit 1
+        RECIPES_SCRIPT=$(realpath "$value")
+        readonly RECIPES_SCRIPT
+        ;;
+      R | rule) OPTIONS+=("rule") ;;
+      q | quiet) OPTIONS+=("quiet") ;;
+      v | version) echo -e "${PROJECT_NAME} ${GREEN}${SCRIPT_VERSION}${NC}" && exit 0 ;;
+      h | help) echo -e "$(print_options)" && exit 0 ;;
+      *)
+        log -error "Invalid option ${RED}${opt}${NC}"
+        log -info "use ${BLUE}-h${NC} for help." && exit 1
+        ;;
+      esac
+    fi
+    shift
+  done
+
+  check_cmd nc || exit 1
+
+  ###########################################
+  ###   If the layer option is provided   ###
+  ###########################################
+
+  if opt_exists layer; then
+    # Change the layer and exit if the --layer is provided.
+    opt_exists layer && change_layer "$LAYER_NAME"
+
+    opt_exists interval &&
+      log -warn "The update interval does not take effect when the ${BLUE}layer${NC} option is used."
+
+    exit 0
+  fi
+
+  ###########################################
+  ### If the layer option is not provided ###
+  ###########################################
+
+  check_cmd jq || exit 1
+
+  # If the --layer is not provided, load and validate
+  # the user config file before executing other processes.
+  config::load_config || exit 1
+
+  if opt_exists rule; then
+    print_rule && exit 0 || exit 1
+
+  # Change the layer and exit if --class or --title are provided.
+  elif opt_exists class || opt_exists title; then
+    set_win_rule
+    change_layer "$LAYER_NAME" && exit 0
+
+  # If neither the --class nor --title are provided, attempt to
+  # retrieve them from the active window and continue running the script.
+  else
+    while true; do
+      set_win_rule && change_layer "$LAYER_NAME" # Change the layer if necessary.
+      sleep "$INTERVAL"                          # Pause to reduce CPU usage.
+    done
+  fi
+}
+
+main "$@"
