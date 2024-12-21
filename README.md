@@ -98,7 +98,7 @@ See the [options](/docs/script_options.md) doc for more details.
 You can create a custom script to execute when switching layers. For example, to send a notification on layer change, you can use:
 
 ```bash
-notify-send "Current Layer" "Layer Name: $LAYER_NAME"
+notify-send -r 12345 "Current Layer" "Layer Name: $LAYER_NAME"
 ```
 
 See the [recipes](/docs/recipes.md) doc for more details.
