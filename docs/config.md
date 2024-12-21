@@ -31,7 +31,7 @@ Specifies the IP address used in the configuration. Replace `"127.0.0.1"` with y
 Specifies the port number. Change the value `10000` to the port you wish to use.
 
 > [!IMPORTANT]
-> Ensure that the specified IP and port match those used by **Kanata** to avoid connection issues. For example:
+> Ensure that the specified `ip` and `port` match those used by **Kanata** to avoid connection issues. For example:
 >
 > ```bash
 > kanata -p 127.0.0.1:10000
