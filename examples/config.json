@@ -11,7 +11,7 @@
     {
       "class": "^nvim$",
       "title": "nvim - \\[Scratch]",
-      "layer": "vim_dashboard"
+      "layer": "vim_scratch"
     },
     { "class": "*", "title": "*", "layer": true }
   ]
