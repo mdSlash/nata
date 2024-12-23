@@ -27,7 +27,7 @@
 2. **Using `curl` to download the script and make it executable in a single Line**:
 
    ```bash
-   curl -O https://raw.githubusercontent.com/mdSlash/nata/refs/heads/main/src/nata.sh && chmod +x nata
+   curl -O https://raw.githubusercontent.com/mdSlash/nata/refs/heads/main/src/nata.sh && chmod +x nata.sh
    ```
 
 ### Dependencies
