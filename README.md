@@ -21,13 +21,13 @@
 1. **Manual Download**: Download the [Nata script](/src/nata.sh) and make it executable:
 
    ```bash
-   chmod +x nata
+   chmod +x nata.sh
    ```
 
 2. **Using `curl` to download the script and make it executable in a single Line**:
 
    ```bash
-   curl -O https://raw.githubusercontent.com/mdSlash/nata/refs/heads/main/nata && chmod +x nata
+   curl -O https://raw.githubusercontent.com/mdSlash/nata/refs/heads/main/src/nata.sh && chmod +x nata
    ```
 
 ### Dependencies
