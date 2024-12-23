@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Versioning & Project Information
-SCRIPT_VERSION="1.0.1" # NOTE: Update version number when modifying the script.
+# VERSIONING & PROJECT INFORMATION
+SCRIPT_VERSION="1.0.0"
 PROJECT_NAME="nata"
 PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
 
@@ -40,6 +40,10 @@ if [[ -z $DRY_RUN ]]; then
   readonly NC="\e[0m" # No color
 fi
 
+################################################################################
+###                            CORE FUNCTIONALITY                            ###
+################################################################################
+
 # Changes the current layer to the specified layer name by sending a JSON payload
 # to a designated IP and port using netcat. If a valid recipes script is defined,
 # it will be executed in the background.
@@ -57,76 +61,6 @@ change_layer() {
   fi
 
   return 0
-}
-
-# Outputs a JSON representation of the active window's class and title,
-# including the matching window rule, or null if no match is found.
-print_rule() {
-  local -i rule_found=0
-
-  set_win_rule && ((rule_found++))
-
-  if [[ $rule_found -eq 1 ]]; then
-    jq -n \
-      --arg active_class "$ACTIVE_WIN_CLASS" \
-      --arg active_title "$ACTIVE_WIN_TITLE" \
-      --arg rule_class "$WIN_CLASS" \
-      --arg rule_title "$WIN_TITLE" \
-      --arg layer "$LAYER_NAME" \
-      '{ active_window: { class: $active_class, title: $active_title },
-    window_rule: {class: $rule_class, title: $rule_title, layer: $layer } }'
-    return 0
-  else
-    jq -n \
-      --arg class "$ACTIVE_WIN_CLASS" \
-      --arg title "$ACTIVE_WIN_TITLE" \
-      '{ active_window: { class: $class, title: $title }, window_rule: null }'
-    return 1
-  fi
-}
-
-# Updates the global variables related to the current active window's class, title,
-# and associated layer name based on predefined window rules.
-set_win_rule() {
-  if ! opt_exists class && ! opt_exists title; then
-    local prev_win_class=$ACTIVE_WIN_CLASS
-    local prev_win_title=$ACTIVE_WIN_TITLE
-
-    set_active_win_info
-
-    # Check if the active window class and title have changed
-    [[ $ACTIVE_WIN_CLASS == "$prev_win_class" ]] &&
-      [[ $ACTIVE_WIN_TITLE == "$prev_win_title" ]] &&
-      return 1
-  fi
-
-  for ((i = 0; i < WIN_RULES_COUNT; i++)); do
-    if [[ ${WIN_CLASSES[i]} == "*" ]] ||
-      [[ $ACTIVE_WIN_CLASS =~ ${WIN_CLASSES[i]} ]]; then
-
-      if [[ ${WIN_TITLES[i]} == "*" ]] ||
-        [[ $ACTIVE_WIN_TITLE =~ ${WIN_TITLES[i]} ]]; then
-
-        WIN_CLASS="${WIN_CLASSES[i]}"
-        WIN_TITLE="${WIN_TITLES[i]}"
-        LAYER_NAME="${LAYER_NAMES[i]}"
-        break
-      fi
-    fi
-  done
-
-  if [[ "$LAYER_NAME" == "false" ]] || [[ "$LAYER_NAME" == "null" ]]; then
-    return 1
-  elif [[ -z "${LAYER_NAME///}" ]]; then
-    if ! opt_exists rule; then
-      log -warn "Layer change failed: layer name value is empty."
-      log -info "To disable layer changes in the active window, set the value to \
-    \n${BLUE}false${NC} or ${BLUE}null${NC} in your window rule within the config file."
-    fi
-    return 1
-  else
-    return 0
-  fi
 }
 
 ################################################################################
@@ -234,11 +168,81 @@ check_recipes_script() {
 }
 
 ################################################################################
-###                               Window Rules                               ###
+###                               WINDOW RULES                               ###
 ################################################################################
 
+# Outputs a JSON representation of the active window's class and title,
+# including the matching window rule, or null if no match is found.
+win::print_rule() {
+  local -i rule_found=0
+
+  win::set_win_rule && ((rule_found++))
+
+  if [[ $rule_found -eq 1 ]]; then
+    jq -n \
+      --arg active_class "$ACTIVE_WIN_CLASS" \
+      --arg active_title "$ACTIVE_WIN_TITLE" \
+      --arg rule_class "$WIN_CLASS" \
+      --arg rule_title "$WIN_TITLE" \
+      --arg layer "$LAYER_NAME" \
+      '{ active_window: { class: $active_class, title: $active_title },
+    window_rule: {class: $rule_class, title: $rule_title, layer: $layer } }'
+    return 0
+  else
+    jq -n \
+      --arg class "$ACTIVE_WIN_CLASS" \
+      --arg title "$ACTIVE_WIN_TITLE" \
+      '{ active_window: { class: $class, title: $title }, window_rule: null }'
+    return 1
+  fi
+}
+
+# Updates the global variables related to the current active window's class, title,
+# and associated layer name based on predefined window rules.
+win::set_win_rule() {
+  if ! opt_exists class && ! opt_exists title; then
+    local prev_win_class=$ACTIVE_WIN_CLASS
+    local prev_win_title=$ACTIVE_WIN_TITLE
+
+    win::set_active_win_info
+
+    # Check if the active window class and title have changed
+    [[ $ACTIVE_WIN_CLASS == "$prev_win_class" ]] &&
+      [[ $ACTIVE_WIN_TITLE == "$prev_win_title" ]] &&
+      return 1
+  fi
+
+  for ((i = 0; i < WIN_RULES_COUNT; i++)); do
+    if [[ ${WIN_CLASSES[i]} == "*" ]] ||
+      [[ $ACTIVE_WIN_CLASS =~ ${WIN_CLASSES[i]} ]]; then
+
+      if [[ ${WIN_TITLES[i]} == "*" ]] ||
+        [[ $ACTIVE_WIN_TITLE =~ ${WIN_TITLES[i]} ]]; then
+
+        WIN_CLASS="${WIN_CLASSES[i]}"
+        WIN_TITLE="${WIN_TITLES[i]}"
+        LAYER_NAME="${LAYER_NAMES[i]}"
+        break
+      fi
+    fi
+  done
+
+  if [[ "$LAYER_NAME" == "false" ]] || [[ "$LAYER_NAME" == "null" ]]; then
+    return 1
+  elif [[ -z "${LAYER_NAME///}" ]]; then
+    if ! opt_exists rule; then
+      log -warn "Layer change failed: layer name value is empty."
+      log -info "To disable layer changes in the active window, set the value to \
+    \n${BLUE}false${NC} or ${BLUE}null${NC} in your window rule within the config file."
+    fi
+    return 1
+  else
+    return 0
+  fi
+}
+
 # Set the class and title of the active window
-set_active_win_info() {
+win::set_active_win_info() {
   local win_info
   local no_active_win_msg="Failed to detect the active window information."
 
@@ -276,7 +280,7 @@ set_active_win_info() {
 }
 
 ################################################################################
-###                              Configuration                               ###
+###                              CONFIGURATION                               ###
 ################################################################################
 # Handles the user JSON configuration file.
 # Ensure the configuration file is properly formatted.
@@ -441,7 +445,7 @@ config::load_config() {
 }
 
 ################################################################################
-###                                User Guide                                ###
+###                                USER GUIDE                                ###
 ################################################################################
 # Provides help and usage information for the script.
 # Use the -h or --help option to display this information.
@@ -616,12 +620,12 @@ main() {
   config::load_config || exit 1
 
   if opt_exists rule; then
-    print_rule && exit 0 || exit 1
+    win::print_rule && exit 0 || exit 1
 
   # Change the layer and exit if --class or --title are provided.
   elif opt_exists class || opt_exists title; then
 
-    if set_win_rule; then
+    if win::set_win_rule; then
       [[ -n "$DRY_RUN" ]] && echo "$WIN_CLASS, $WIN_TITLE, $LAYER_NAME" && exit 0
       change_layer && exit 0
     else
@@ -633,8 +637,8 @@ main() {
   # retrieve them from the active window and continue running the script.
   else
     while true; do
-      set_win_rule && change_layer # Change the layer if necessary.
-      sleep "$INTERVAL"            # Pause to reduce CPU usage.
+      win::set_win_rule && change_layer # Change the layer if necessary.
+      sleep "$INTERVAL"                 # Pause to reduce CPU usage.
     done
   fi
 }
