@@ -1,6 +1,6 @@
 # Nata Script Options
 
-This document lists all [Nata script](../nata) options in detail.
+This document lists all [Nata script](../src/nata.sh) options in detail.
 
 ## Table of Contents
 
@@ -51,7 +51,6 @@ This document lists all [Nata script](../nata) options in detail.
 This option can be useful for testing whether the active window matches any rules defined in your configuration.
 
 ---
-
 
 ### `-i`, `--interval`
 

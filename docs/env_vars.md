@@ -1,6 +1,6 @@
 # Script Environment Variables
 
-This document outlines the environment variables used in the [Nata script](../nata), detailing their purpose and data types. You can use these variables within your [recipes](/docs/recipes.md) script.
+This document outlines the environment variables used in the [Nata script](../src/nata.sh), detailing their purpose and data types. You can use these variables within your [recipes](/docs/recipes.md) script.
 
 ## Table of Contents
 
