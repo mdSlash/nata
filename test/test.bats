@@ -24,53 +24,53 @@ setup() {
 }
 
 @test "Check window class matching rules" {
-  run nata -class code-oss
+  run nata.sh -class code-oss
   assert_output "code-oss, *, vs_code"
   assert_success
 
-  run nata -class Vivaldi
+  run nata.sh -class Vivaldi
   assert_output "Vivaldi, *, false"
   assert_failure
 }
 
 @test "Check window title matching rules" {
-  run nata -title "index.html - Code - OSS"
+  run nata.sh -title "index.html - Code - OSS"
   assert_output "*, index.html - Code - OSS, lang_html"
   assert_success
 
-  run nata -title "VLC media player"
+  run nata.sh -title "VLC media player"
   assert_output "*, VLC media player, null"
   assert_failure
 }
 
 @test "Check window class and title matching rules" {
-  run nata -class Steam -title Library
+  run nata.sh -class Steam -title Library
   assert_output "Steam, Library, gaming"
   assert_success
 
-  run nata -class "org.inkscape.Inkscape" -title "New document 1 - Inkscape"
+  run nata.sh -class "org.inkscape.Inkscape" -title "New document 1 - Inkscape"
   assert_output "Inkscape, New document, null"
   assert_failure
 }
 
 @test "Check regex pattern matching rules" {
-  run nata -class "obs"
+  run nata.sh -class "obs"
   assert_output "^obs$, *, streaming"
   assert_success
 
-  run nata -title "Mozilla Firefox - Home"
+  run nata.sh -title "Mozilla Firefox - Home"
   assert_output "*, ^Mozilla, null"
   assert_failure
 }
 
 @test "Check escaped regex pattern matching" {
-  run nata -class "nvim" -title "nvim - [Scratch]"
+  run nata.sh -class "nvim" -title "nvim - [Scratch]"
   assert_output "nvim, nvim - \\[Scratch], vim_scratch"
   assert_success
 }
 
 @test "Check fallback rule" {
-  run nata -class Firefox
+  run nata.sh -class Firefox
   assert_output "*, *, BaseLayer"
   assert_success
 }
