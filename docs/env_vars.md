@@ -11,32 +11,32 @@ This document outlines the environment variables used in the [Nata script](../sr
 
 ### Window Matching Rule
 
-| Variable Name       | Type   | Description                                    |
-| ------------------- | ------ | ---------------------------------------------- |
-| `$ACTIVE_WIN_CLASS` | String | Class of the currently active window.          |
-| `$ACTIVE_WIN_TITLE` | String | Title of the currently active window.          |
-| `$LAYER_NAME`       | String | Name of the layer for the matched window rule. |
+| Variable Name      | Type   | Description                                    |
+| ------------------ | ------ | ---------------------------------------------- |
+| `ACTIVE_WIN_CLASS` | String | Class of the currently active window.          |
+| `ACTIVE_WIN_TITLE` | String | Title of the currently active window.          |
+| `LAYER_NAME`       | String | Name of the layer for the matched window rule. |
 
 ### Config
 
-| Variable Name     | Type    | Description                                                     |
-| ----------------- | ------- | --------------------------------------------------------------- |
-| `$CONFIG_FILE`    | String  | Path to the configuration file.                                 |
-| `$RECIPES_SCRIPT` | String  | Path to the recipes script.                                     |
-| `$CONFIG_DATA`    | String  | Configuration data from the config file, stored in JSON format. |
-| `$BASE_LAYER`     | String  | Base layer name.                                                |
-| `$INTERVAL`       | Number  | Time interval in seconds.                                       |
-| `$IP`             | String  | IP address.                                                     |
-| `$PORT`           | Integer | Port number.                                                    |
+| Variable Name    | Type    | Description                                                     |
+| ---------------- | ------- | --------------------------------------------------------------- |
+| `CONFIG_FILE`    | String  | Path to the configuration file.                                 |
+| `RECIPES_SCRIPT` | String  | Path to the recipes script.                                     |
+| `CONFIG_DATA`    | String  | Configuration data from the config file, stored in JSON format. |
+| `BASE_LAYER`     | String  | Base layer name.                                                |
+| `INTERVAL`       | Number  | Time interval in seconds.                                       |
+| `IP`             | String  | IP address.                                                     |
+| `PORT`           | Integer | Port number.                                                    |
 
 ### Config Window Rules
 
-| Variable Name      | Type    | Description                                        |
-| ------------------ | ------- | -------------------------------------------------- |
-| `$WIN_RULES_COUNT` | Integer | Number of window rules defined in the config file. |
-| `$WIN_CLASSES`     | Array   | List of window classes from the config file.       |
-| `$WIN_TITLES`      | Array   | List of window titles from the config file.        |
-| `$LAYER_NAMES`     | Array   | List of layer names from the config file.          |
+| Variable Name     | Type    | Description                                        |
+| ----------------- | ------- | -------------------------------------------------- |
+| `WIN_RULES_COUNT` | Integer | Number of window rules defined in the config file. |
+| `WIN_CLASSES`     | Array   | List of window classes from the config file.       |
+| `WIN_TITLES`      | Array   | List of window titles from the config file.        |
+| `LAYER_NAMES`     | Array   | List of layer names from the config file.          |
 
 ## Accessing Environment Variables
 
