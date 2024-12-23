@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Versioning & Project Information
-SCRIPT_VERSION="1.0.0" # NOTE: Update version number when modifying the script.
+SCRIPT_VERSION="1.0.1" # NOTE: Update version number when modifying the script.
 PROJECT_NAME="nata"
 PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
 
