@@ -2,6 +2,16 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "src/nata/"
+      - "examples/config.json"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "src/nata"
+      - "examples/config.json"
 
 jobs:
   my_test:
@@ -10,7 +20,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Setup Bats and Bats Libraries
         id: setup-bats
         uses: bats-core/bats-action@3.0.0
@@ -19,7 +29,7 @@ jobs:
           assert-path: "${{ github.workspace }}/tests/bats-assert"
           detik-path: "${{ github.workspace }}/tests/bats-detik"
           file-path: "${{ github.workspace }}/tests/bats-file"
-          
+
       - name: Run Bats Tests
         shell: bash
         env:
