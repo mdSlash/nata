@@ -2,14 +2,25 @@
   "ip": "127.0.0.1",
   "port": 10000,
   "interval": 200,
-  "base_layer": "base",
+  "base_layer": "BaseLayer",
   "recipes": "~/.config/kanata/recipes.sh",
   "window_rules": [
-    { "class": "Ferdium", "title": "ChatGPT", "layer": "ai_mode" },
-    { "class": "*", "title": "Code - OSS", "layer": "vs_code" },
-    { "class": "Vivaldi", "title": "*", "layer": null },
+    { "class": "*", "title": "ChatGPT", "layer": "ai_mode" },
+
+    { "class": "code-oss", "title": "*", "layer": "vs_code" },
+    { "class": "*", "title": "index.html - Code - OSS", "layer": "lang_html" },
+    { "title": "style.css - Code - OSS", "layer": "lang_css" },
+
+    { "class": false, "title": "VLC media player", "layer": null },
+
+    { "class": "Steam", "title": "Library", "layer": "gaming" },
+    { "class": "Inkscape", "title": "New document" },
+
+    { "class": "Vivaldi", "title": "*", "layer": false },
+    { "class": "^obs$", "layer": "streaming" },
+    { "title": "^Mozilla" },
     {
-      "class": "^nvim$",
+      "class": "nvim",
       "title": "nvim - \\[Scratch]",
       "layer": "vim_scratch"
     },
