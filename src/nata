@@ -1,56 +1,57 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Versioning & Project Information
-readonly SCRIPT_VERSION="1.0.0" # NOTE: Update version number when modifying the script.
-readonly PROJECT_NAME="nata"
-readonly PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
+SCRIPT_VERSION="1.0.0" # NOTE: Update version number when modifying the script.
+PROJECT_NAME="nata"
+PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
 
-# OPTIONS
-declare -a OPTIONS # Stores entered options and their values if specified
-declare WIN_CLASS  # The class of the matched window rule or "class" option.
-declare WIN_TITLE  # The title of the matched window rule or "title" option.
+if [[ -z $DRY_RUN ]]; then
+  # OPTIONS
+  OPTIONS=()    # Stores entered options and their values if specified.
+  QUIET_MODE="" # Run in quiet mode.
+  WIN_CLASS=""  # The class of the matched window rule or "class" option.
+  WIN_TITLE=""  # The title of the matched window rule or "title" option.
 
-# WINDOW MATCHING RULE
-declare -x ACTIVE_WIN_CLASS # The class of the active window or "class" option..
-declare -x ACTIVE_WIN_TITLE # The title of the active window or "title" option..
-declare -x LAYER_NAME       # Layer name for the matched window rule or "layer" option.
+  # WINDOW MATCHING RULE
+  export ACTIVE_WIN_CLASS="" # The class of the active window or "class" option..
+  export ACTIVE_WIN_TITLE="" # The title of the active window or "title" option..
+  export LAYER_NAME=""       # Layer name for the matched window rule or "layer" option.
 
-# CONFIG
-declare -x CONFIG_FILE="$HOME/.config/kanata/config.json"
-declare -x RECIPES_SCRIPT="$HOME/.config/kanata/recipes.sh"
-declare -x CONFIG_DATA # Stores the config data from the config file as JSON format.
-declare -x BASE_LAYER
-declare -x INTERVAL=0.2 # 200 milliseconds
-declare -x IP=127.0.0.1
-declare -x PORT=10000
+  # CONFIG
+  export CONFIG_FILE="$HOME/.config/kanata/config.json"
+  export RECIPES_SCRIPT="$HOME/.config/kanata/recipes.sh"
+  export CONFIG_DATA="" # Stores the config data from the config file as JSON format.
+  export BASE_LAYER=""
+  export INTERVAL=0.2 # 200 milliseconds
+  export IP=127.0.0.1
+  export PORT=10000
 
-# CONFIG WINDOW RULE
-declare -xi WIN_RULES_COUNT=0
-declare -xa WIN_CLASSES # An array of window class patterns for matching.
-declare -xa WIN_TITLES  # An array of window title patterns for matching.
-declare -xa LAYER_NAMES # An array of layer names corresponding to the window rules.
+  # CONFIG WINDOW RULE
+  declare -xi WIN_RULES_COUNT=0
+  declare -x WIN_CLASSES=() # An array of window class patterns for matching.
+  declare -x WIN_TITLES=()  # An array of window title patterns for matching.
+  declare -x LAYER_NAMES=() # An array of layer names corresponding to the window rules.
 
-# COLOR
-readonly GREEN="\e[0;32m"
-readonly YELLOW="\e[0;33m"
-readonly RED="\e[0;31m"
-readonly BLUE="\e[0;34m"
-readonly NC="\e[0m" # No color
+  # COLOR
+  readonly GREEN="\e[0;32m"
+  readonly YELLOW="\e[0;33m"
+  readonly RED="\e[0;31m"
+  readonly BLUE="\e[0;34m"
+  readonly NC="\e[0m" # No color
+fi
 
 # Changes the current layer to the specified layer name by sending a JSON payload
 # to a designated IP and port using netcat. If a valid recipes script is defined,
 # it will be executed in the background.
 change_layer() {
-  local layer_name="$1"
-  [[ -z "${layer_name}" ]] && log -error "Layer name is empty." && exit 1
+  [[ -z "${LAYER_NAME}" ]] && log -error "Layer name is empty." && exit 1
 
   # Construct the JSON payload and send it using netcat (nc)
-  printf '{"ChangeLayer":{"new":"%s"}}\n' "$layer_name" |
+  printf '{"ChangeLayer":{"new":"%s"}}\n' "$LAYER_NAME" |
     timeout 1 nc "$IP" "$PORT" >/dev/null 2>&1 &
 
   # Execute the user-defined recipes script if the RECIPES_SCRIPT is valid.
   if check_recipes_script; then
-    # shellcheck disable=SC1090
     $RECIPES_SCRIPT &
     opt_exists layer && log -warn "Recipes detected."
   fi
@@ -91,17 +92,21 @@ set_win_rule() {
     local prev_win_class=$ACTIVE_WIN_CLASS
     local prev_win_title=$ACTIVE_WIN_TITLE
 
-    win::set_active_win_info
+    set_active_win_info
 
     # Check if the active window class and title have changed
-    [[ "$ACTIVE_WIN_CLASS" == "$prev_win_class" ]] &&
-      [[ "$ACTIVE_WIN_TITLE" == "$prev_win_title" ]] &&
+    [[ $ACTIVE_WIN_CLASS == "$prev_win_class" ]] &&
+      [[ $ACTIVE_WIN_TITLE == "$prev_win_title" ]] &&
       return 1
   fi
 
   for ((i = 0; i < WIN_RULES_COUNT; i++)); do
-    if [[ ${WIN_CLASSES[i]} == "*" ]] || [[ "$ACTIVE_WIN_CLASS" =~ ${WIN_CLASSES[i]} ]]; then
-      if win::is_win_title_match "${WIN_TITLES[i]}"; then
+    if [[ ${WIN_CLASSES[i]} == "*" ]] ||
+      [[ $ACTIVE_WIN_CLASS =~ ${WIN_CLASSES[i]} ]]; then
+
+      if [[ ${WIN_TITLES[i]} == "*" ]] ||
+        [[ $ACTIVE_WIN_TITLE =~ ${WIN_TITLES[i]} ]]; then
+
         WIN_CLASS="${WIN_CLASSES[i]}"
         WIN_TITLE="${WIN_TITLES[i]}"
         LAYER_NAME="${LAYER_NAMES[i]}"
@@ -110,9 +115,9 @@ set_win_rule() {
     fi
   done
 
-  if [[ $LAYER_NAME == "false" ]] || [[ $LAYER_NAME == "null" ]]; then
+  if [[ "$LAYER_NAME" == "false" ]] || [[ "$LAYER_NAME" == "null" ]]; then
     return 1
-  elif [[ -z "${LAYER_NAME// /}" ]]; then
+  elif [[ -z "${LAYER_NAME///}" ]]; then
     if ! opt_exists rule; then
       log -warn "Layer change failed: layer name value is empty."
       log -info "To disable layer changes in the active window, set the value to \
@@ -134,8 +139,8 @@ log() {
 
   case "$level" in
   -error) echo -e "${RED}[ERROR]$NC $msg" >&2 ;;
-  -info) opt_exists quiet && return 0 || echo -e "${GREEN}[INFO]$NC $msg" ;;
-  -warn) opt_exists quiet && return 0 || echo -e "${YELLOW}[WARN]$NC $msg" >&2 ;;
+  -info) [[ -n $QUIET_MODE ]] && return 0 || echo -e "${GREEN}[INFO]$NC $msg" ;;
+  -warn) [[ -n $QUIET_MODE ]] && return 0 || echo -e "${YELLOW}[WARN]$NC $msg" >&2 ;;
   *) echo "$2" ;;
   esac
 }
@@ -144,7 +149,7 @@ check_opt_value() {
   local opt="$1"
   local value="$2"
 
-  if [[ -z "${value// /}" ]]; then
+  if [[ -z "${value///}" ]]; then
     log -error "The value for the ${BLUE}-${opt}${NC} option cannot be empty."
     exit 1
   fi
@@ -155,7 +160,20 @@ check_opt_value() {
   fi
 }
 
-get_prop() { jq -r ".$2" <<<"$1"; } # $1 => JSON data, $2 => prop path
+get_prop() {
+  local json_data=$1
+  local prop_path=$2
+  local enable_trans=$3 # Flag to enable transformation
+
+  if [[ -n $enable_trans ]]; then
+    # If the value is null, false, true, or empty string it will be set to "*"
+    local jq_condition='if . == null or . == false or . == "" or . == true then "*" else . end'
+
+    jq -r ".${prop_path} | $jq_condition" <<<"$json_data"
+  else
+    jq -r ".${prop_path}" <<<"$json_data"
+  fi
+}
 
 is_integer() { [[ $1 =~ ^[0-9]+$ ]] || return 1; }
 
@@ -219,19 +237,8 @@ check_recipes_script() {
 ###                               Window Rules                               ###
 ################################################################################
 
-win::is_win_title_match() {
-  local win_title_pattern=$1
-
-  if [[ $ACTIVE_WIN_TITLE =~ $win_title_pattern ]] ||
-    [[ $win_title_pattern == "*" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 # Set the class and title of the active window
-win::set_active_win_info() {
+set_active_win_info() {
   local win_info
   local no_active_win_msg="Failed to detect the active window information."
 
@@ -356,12 +363,12 @@ config::set_recipes_script() {
 }
 
 config::set_win_classes() {
-  mapfile -t WIN_CLASSES < <(get_prop "$CONFIG_DATA" window_rules[].class)
+  mapfile -t WIN_CLASSES < <(get_prop "$CONFIG_DATA" window_rules[].class enable_trans)
   readonly WIN_CLASSES
 }
 
 config::set_win_titles() {
-  mapfile -t WIN_TITLES < <(get_prop "$CONFIG_DATA" window_rules[].title)
+  mapfile -t WIN_TITLES < <(get_prop "$CONFIG_DATA" window_rules[].title enable_trans)
   readonly WIN_TITLES
 }
 
@@ -445,10 +452,10 @@ print_options() {
   local script_name
   local green="\e[1;32m" # Bold green color
 
-  if [[ $0 =~ ^/home/$(whoami)/.local/bin/ ]]; then
+  if [[ ${BASH_SOURCE[0]} =~ ^/home/$(whoami)/.local/bin/ ]]; then
     script_name="${0##*/}"
   else
-    script_name=$0
+    script_name=${BASH_SOURCE[0]}
   fi
 
   cat <<EOF
@@ -570,7 +577,7 @@ main() {
         readonly RECIPES_SCRIPT
         ;;
       R | rule) OPTIONS+=("rule") ;;
-      q | quiet) OPTIONS+=("quiet") ;;
+      q | quiet) QUIET_MODE=1 ;;
       v | version) echo -e "${PROJECT_NAME} ${GREEN}${SCRIPT_VERSION}${NC}" && exit 0 ;;
       h | help) echo -e "$(print_options)" && exit 0 ;;
       *)
@@ -590,7 +597,7 @@ main() {
 
   if opt_exists layer; then
     # Change the layer and exit if the --layer is provided.
-    opt_exists layer && change_layer "$LAYER_NAME"
+    opt_exists layer && change_layer
 
     opt_exists interval &&
       log -warn "The update interval does not take effect when the ${BLUE}layer${NC} option is used."
@@ -613,15 +620,21 @@ main() {
 
   # Change the layer and exit if --class or --title are provided.
   elif opt_exists class || opt_exists title; then
-    set_win_rule
-    change_layer "$LAYER_NAME" && exit 0
+
+    if set_win_rule; then
+      [[ -n "$DRY_RUN" ]] && echo "$WIN_CLASS, $WIN_TITLE, $LAYER_NAME" && exit 0
+      change_layer && exit 0
+    else
+      [[ -n "$DRY_RUN" ]] && echo "$WIN_CLASS, $WIN_TITLE, $LAYER_NAME"
+      exit 1
+    fi
 
   # If neither the --class nor --title are provided, attempt to
   # retrieve them from the active window and continue running the script.
   else
     while true; do
-      set_win_rule && change_layer "$LAYER_NAME" # Change the layer if necessary.
-      sleep "$INTERVAL"                          # Pause to reduce CPU usage.
+      set_win_rule && change_layer # Change the layer if necessary.
+      sleep "$INTERVAL"            # Pause to reduce CPU usage.
     done
   fi
 }
