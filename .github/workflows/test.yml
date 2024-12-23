@@ -3,15 +3,16 @@ on:
     branches:
       - main
     paths:
-      - "src/nata/"
+      - "src/nata.sh"
       - "examples/config.json"
-
+      - "test/test.bats"
   push:
     branches:
       - main
     paths:
-      - "src/nata"
+      - "src/nata.sh"
       - "examples/config.json"
+      - "test/test.bats"
 
 jobs:
   my_test:
