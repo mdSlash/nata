@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # VERSIONING & PROJECT INFORMATION
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.0.1"
 PROJECT_NAME="nata"
 PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
 
@@ -331,21 +331,24 @@ config::set_update_interval() {
     fi
   fi
 
-  if ! is_integer "$interval"; then
-    log -error "The update interval value must be an integer."
-    exit 1
+  if ! [[ $interval == "once" ]]; then
+    if ! is_integer "$interval"; then
+      log -error "${BLUE}Interval${NC} value must be an ${YELLOW}integer${NC} or '${YELLOW}once${NC}'."
+      exit 1
+    fi
+
+    if [[ "$interval" -lt 50 ]]; then
+      log -warn "Update interval ${YELLOW}${INTERVAL}${NC} is below ${GREEN}50ms${NC}, which may cause high CPU usage."
+      log -info "Consider a higher interval; a range of ${GREEN}50${NC} to ${GREEN}200${NC} is recommended."
+    elif [[ "$interval" -gt 200 ]]; then
+      log -warn "Update interval ${YELLOW}${INTERVAL}${NC} exceeds ${GREEN}200ms${NC}, which may lead to reduced responsiveness."
+      log -info "Consider lowering the interval; a range of ${GREEN}50${NC} to ${GREEN}200${NC} is recommended."
+    fi
+
+    # Convert interval from milliseconds to seconds
+    INTERVAL=$(awk "BEGIN {printf \"%.2f\", $interval / 1000}")
   fi
 
-  if [[ "$interval" -lt 50 ]]; then
-    log -warn "Update interval ${YELLOW}${INTERVAL}${NC} is below ${GREEN}50ms${NC}, which may cause high CPU usage."
-    log -info "Consider a higher interval; a range of ${GREEN}50${NC} to ${GREEN}200${NC} is recommended."
-  elif [[ "$interval" -gt 200 ]]; then
-    log -warn "Update interval ${YELLOW}${INTERVAL}${NC} exceeds ${GREEN}200ms${NC}, which may lead to reduced responsiveness."
-    log -info "Consider lowering the interval; a range of ${GREEN}50${NC} to ${GREEN}200${NC} is recommended."
-  fi
-
-  # Convert interval from milliseconds to seconds
-  INTERVAL=$(awk "BEGIN {printf \"%.2f\", $interval / 1000}")
   readonly INTERVAL
 }
 
@@ -555,8 +558,7 @@ main() {
         LAYER_NAME=$value
         ;;
       i | interval)
-        check_opt_value "$opt" "$value" ||
-          { log -error "The update interval number must be an integer." && exit 1; }
+        check_opt_value "$opt" "$value"
         OPTIONS+=("interval $value")
         INTERVAL=$value
         ;;
@@ -638,7 +640,8 @@ main() {
   else
     while true; do
       win::set_win_rule && change_layer # Change the layer if necessary.
-      sleep "$INTERVAL"                 # Pause to reduce CPU usage.
+      [[ $INTERVAL == "once" ]] && exit 0
+      sleep "$INTERVAL" # Pause to reduce CPU usage.
     done
   fi
 }
