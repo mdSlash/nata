@@ -45,6 +45,9 @@ Specifies the port number. Change the value `10000` to the port you wish to use.
 
 Sets the interval (in milliseconds) for checking the active window rule and changing the layer if it matches.
 
+> [!NOTE]
+> If set to `once`, it will exit after a single check.
+
 ## `base_layer`
 
 ```json
