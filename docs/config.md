@@ -1,6 +1,6 @@
 # Configuration
 
-This document lists all available options you can use in your configuration file, which should be in [JSON](https://en.wikipedia.org/wiki/JSON) format.
+This document lists all available properties you can use in your configuration file, which should be in [JSON](https://en.wikipedia.org/wiki/JSON) format.
 
 To see a sample configuration file, see: [`config.json`](../examples/config.json)
 
