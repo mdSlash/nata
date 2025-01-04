@@ -57,7 +57,7 @@ This option can be useful for testing whether the active window matches any rule
 |          |                                                                                |
 | -------- | ------------------------------------------------------------------------------ |
 | **DESC** | Set the update interval for checking the active window and changing the layer. |
-| **ARG**  | `N` (in milliseconds)                                                          |
+| **ARG**  | `N` (in milliseconds)<br>`once` to specify a single check.                     |
 | **Def**  | `200`                                                                          |
 
 > [!NOTE]
