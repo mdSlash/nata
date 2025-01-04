@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # VERSIONING & PROJECT INFORMATION
-SCRIPT_VERSION="1.0.1"
+SCRIPT_VERSION="1.0.2"
 PROJECT_NAME="nata"
 PROJECT_REPO="https://github.com/mdSlash/$PROJECT_NAME"
 
@@ -489,32 +489,34 @@ ${green}OPTIONS:${NC}
 
     See: ${GREEN}https://github.com/mdSlash/nata/blob/main/docs/config.md#window_rules${NC}
 
-  ${BLUE}-i, --interval ${YELLOW}<N>${NC}
+  ${BLUE}-i, --interval${NC} <${YELLOW}N${NC} or ${YELLOW}once${NC}>
     Set the update interval for checking the active window and changing the layer.
     ${GREEN}(Default) ${YELLOW}200${NC}
 
-  ${BLUE}-p, --port ${YELLOW}<PORT or IP:PORT>${NC}
+    Use ${YELLOW}once${NC} to perform a single check and exit immediately.
+
+  ${BLUE}-p, --port${NC} <${YELLOW}PORT${NC} or ${YELLOW}IP:PORT${NC}>
     Specify a TCP port or an IP address with a port.
     ${GREEN}(Default) ${YELLOW}127.0.0.1:10000${NC}
 
-  ${BLUE}-C, --class ${YELLOW}<WINDOW_CLASS>${NC}
+  ${BLUE}-C, --class${NC} <${YELLOW}WINDOW_CLASS${NC}>
     Change to the layer and exit if the specified value matches the rule:
     ${YELLOW}{ "class": "<VALUE>", "title": "*" }${NC}
 
-  ${BLUE}-t, --title ${YELLOW}<WINDOW_TITLE>${NC}
+  ${BLUE}-t, --title${NC} <${YELLOW}WINDOW_TITLE${NC}>
     Change to the layer and exit if the specified value matches the rule:
     ${YELLOW}{ "class": "*", "title": " <VALUE>" }${NC}
 
-  ${BLUE}-l, --layer ${YELLOW}<LAYER_NAME>${NC}
+  ${BLUE}-l, --layer${NC} <${YELLOW}LAYER_NAME${NC}>
     Specify a layer name to switch to that layer and exit.
 
-  ${BLUE}-c, --config ${YELLOW}<CONFIG_FILE>${NC}
+  ${BLUE}-c, --config${NC} <${YELLOW}CONFIG_FILE${NC}>
     Specify the path to the config file.
     ${GREEN}(Default) ${YELLOW}~/.config/kanata/config.json${NC}
 
     See: ${GREEN}https://github.com/mdSlash/nata/blob/main/docs/config.md${NC}
 
-  ${BLUE}-r, --recipes ${YELLOW}<SCRIPT_PATH>${NC}
+  ${BLUE}-r, --recipes${NC} <${YELLOW}SCRIPT_PATH${NC}>
     Specify the path to a script that will run in the background whenever the layer changes.
     ${GREEN}(Default) ${YELLOW}~/.config/kanata/recipes.sh${NC}
 
