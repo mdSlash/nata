@@ -62,6 +62,9 @@ This option can be useful for testing whether the active window matches any rule
 
 > [!NOTE]
 > If the [interval](https://github.com/mdSlash/nata/blob/main/docs/config.md#interval) is specified in the configuration file as well, the interval option will override it.
+> 
+> If set to `once`, it will exit after a single check.
+
 
 > [!Warning]
 > The recommended range for the update interval is `50` to `200` milliseconds. Using value below `50` milliseconds will increase CPU usage.
