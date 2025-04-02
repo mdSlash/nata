@@ -52,6 +52,9 @@ These tools are typically installed by default if you are using:
 - **Hyprland**: [hyprctl](https://wiki.hyprland.org/Configuring/Using-hyprctl/)
 - **Sway**: [swaymsg](https://github.com/swaywm/sway/blob/master/swaymsg/swaymsg.1.scd)
 
+> [!IMPORTANT]
+> If you are using Hyprland, try [hyprkan](https://github.com/mdSlash/hyprkan) instead, as it leverages [Hyprland events](https://wiki.hyprland.org/IPC/) to obtain information about active windows.
+
 ## Usage
 
 To use **Nata** script:
